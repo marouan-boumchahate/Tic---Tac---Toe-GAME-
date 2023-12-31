@@ -1,0 +1,256 @@
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+
+class TicTacToe
+{
+private:
+    int Index[3][3];
+
+
+public:
+    TicTacToe()
+    {
+        ResetBoard();
+
+        cout << "\t\t\t\t\t +++++ Game Starts +++++\n\n";
+    }
+
+    void ResetBoard()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                Index[i][j] = 0;
+            }
+        }
+    }
+
+    int Action(int Player_ID, int X, int Y)
+    {
+        if (Index[X][Y] != 1 && Index[X][Y] != 2)
+        {
+            Index[X][Y] = Player_ID;
+            return 0;
+        }
+        else
+            return -1;
+    }
+
+    int CalculateElements()
+    {
+        int counter = 0;
+
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if ((Index[i][j] == 1) || (Index[i][j] == 2))
+                    counter++;
+            }
+        }
+
+        return counter;
+    }
+
+    int GameOverControl(int Choice)
+    {
+        if (Choice < 3)
+        {
+            return -1;
+        }
+        else
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                int j = 0;
+
+                if ((Index[i][j] == Index[i][j + 1] && Index[i][j] == Index[i][j + 2]) && Index[i][j] != 0)
+                {
+                    return Index[i][j];
+                }
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                int j = 0;
+
+                if ((Index[j][i] == Index[j + 1][i] && Index[j][i] == Index[j + 2][i]) && Index[j][i] != 0)
+                {
+                    return Index[j][i];
+                }
+            }
+
+            int i = 0, j = 0;
+
+            if ((Index[i][j] == Index[i + 1][j + 1] && Index[i][j] == Index[i + 2][j + 2]) && Index[i][j] != 0)
+            {
+                return Index[i][j];
+            }
+
+            i = 0;
+            j = 0;
+
+            if ((Index[i + 2][j] == Index[i + 1][j + 1] && Index[i + 2][j] == Index[i][j + 2]) && Index[i + 2][j] != 0)
+            {
+                return Index[i][j];
+            }
+        }
+        if (Choice == 9)
+        {
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+
+    }
+
+    char Convert_To_Character(int num)
+    {
+        if (num == 1)
+            return 'X';
+        else if (num == 2)
+            return 'O';
+        else
+            return ' ';
+    }
+
+    void ArrayPrint()
+    {
+        short k = 0;
+        short l = 0;
+
+        cout << "\t\t\t\t\t";
+        for (int i = 0; i < 11; i++)
+        {
+            for (int j = 0; j < 25; j++)
+            {
+                if (i == 1 || i == 5 || i == 9)
+                {
+                    if (j == 3 || j == 12 || j == 21)
+                    {
+                        cout << Convert_To_Character(Index[k][l]);
+                        if (l == 2)
+                        {
+                            l = 0;
+                            k++;
+                        }
+                        else
+                        {
+                            l++;
+                        }
+                    }
+                    else if (j == 8 || j == 16)
+                    {
+                        cout << "*";
+                    }
+                    else
+                    {
+                        cout << " ";
+                    }
+                }
+                else if (i == 3 || i == 7)
+                {
+                    if ((j + 1) % 2 == 0)
+                    {
+                        cout << " ";
+                    }
+                    else
+                        cout << "*";
+                }
+                else
+                {
+                    if (j == 8 || j == 16)
+                    {
+                        cout << "*";
+                    }
+                    else
+                        cout << " ";
+                }
+            }
+
+            cout << endl;
+            cout << "\t\t\t\t\t";
+        }
+    }
+};
+
+int main()
+{
+    short index_1, index_2;
+    short Sign_For_Elements;
+    short IsTheGameOver;
+    short ID = 1;
+
+    TicTacToe Game;
+
+    do
+    {
+        do
+        {
+            do
+            {
+                cout << "\t\t\tPlayer_" << ID << " -> Enter two numbers where you wanna place your object : \n\n";
+                cout << "\t\t\t\t\tFirst One: ";
+                cin >> index_1;
+                cout << "\t\t\t\t\tSecond One: ";
+                cin >> index_2;
+
+                cout << endl;
+
+            } while ((index_1 < 0 || index_1 > 2) && (index_2 < 0 || index_2 > 2));
+
+        } while (!bool(Game.Action(ID, index_1, index_2) + 1));
+
+        if (ID == 1)
+        {
+            system("color 1F");
+            ID++;
+        }
+        else
+        {
+            system("color 5F");
+            ID--;
+        }
+
+        Sign_For_Elements = Game.CalculateElements();
+        IsTheGameOver = Game.GameOverControl(Sign_For_Elements);
+
+        cout << endl;
+
+        Game.ArrayPrint();
+
+        cout << endl;
+
+    } while (IsTheGameOver != 1 && IsTheGameOver != 0 && IsTheGameOver != 2);
+
+    system("cls");
+    system("color 2F");
+
+    if (IsTheGameOver == 1)
+    {
+        cout << "\t\t\t\t\t****************************\n";
+        cout << "\t\t\t\t\t*  The Winner is player_1  *\n";
+        cout << "\t\t\t\t\t****************************\n\n";
+    }
+    else if (IsTheGameOver == 2)
+    {
+        cout << "\t\t\t\t\t****************************\n";
+        cout << "\t\t\t\t\t*  The Winner is player_2  *\n";
+        cout << "\t\t\t\t\t****************************\n\n";
+    }
+    else
+    {
+        system("color 6F");
+        cout << "\t\t\t\t\t****************************\n";
+        cout << "\t\t\t\t\t*    There is NO WINNER    *\n";
+        cout << "\t\t\t\t\t****************************\n\n";
+    }
+
+    Game.ArrayPrint();
+}
